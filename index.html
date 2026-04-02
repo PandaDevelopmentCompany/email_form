@@ -139,6 +139,18 @@ button:hover {
     padding: 12px;
   }
 }
+
+/* Крутящиеся часы */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-icon {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 5px;
+}
 </style>
 
 </head>
@@ -164,7 +176,7 @@ button:hover {
 </div>
 
 <!-- SUCCESS -->
-<div class="mainreg-popup-notification" id="mainregSuccessPopup">
+<div style="z-index: 3;" class="mainreg-popup-notification" id="mainregSuccessPopup">
   <div class="mainreg-popup-content">
     <p>Ваша заявка успешно отправлена! ✅<br><br>
     Мы свяжемся с вами 📧</p>
@@ -173,11 +185,17 @@ button:hover {
 </div>
 
 <!-- ERROR -->
-<div class="mainreg-popup-notification" id="mainregErrorPopup">
+<div style="z-index: 2;" class="mainreg-popup-notification" id="mainregErrorPopup">
   <div class="mainreg-popup-content">
     <p>Ошибка отправки ⚠️<br><br>Попробуйте позже</p>
     <button class="mainreg-popup-close-btn" onclick="closePopup('mainregErrorPopup')">Закрыть</button>
   </div>
+</div>
+
+<!-- LOADING -->
+<div style="z-index: 1;" class="mainreg-popup-notification" id="mainregLoadingPopup">
+  <div class="mainreg-popup-content">
+<p><span class="loading-icon">⏳</span>Отправка данных...<br>Пожалуйста, подождите...</p>  </div>
 </div>
 
 <script>
@@ -189,7 +207,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
    // Показать уведомление ожидания на 3 секунды
   const loadingPopupId = 'mainregLoadingPopup';
   showPopup(loadingPopupId);
-  setTimeout(() => closePopup(loadingPopupId), 3000);
+  setTimeout(() => closePopup(loadingPopupId), 5000);
 
   const formData = {
     name: document.getElementById('name').value.trim(),
@@ -217,7 +235,7 @@ function showPopup(id) {
 
   setTimeout(() => {
     el.style.display = 'none';
-  }, 4000);
+  }, 5000);
 }
 
 function closePopup(id) {
