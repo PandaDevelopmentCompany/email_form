@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Оставить заявку</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0f0f0f;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* КОНТЕЙНЕР */
+.container {
+  background: #1B1B1B;
+  padding: 30px 25px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* ЗАГОЛОВОК */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+/* INPUT */
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+input:focus {
+  box-shadow: 0 0 8px #4CA2F8;
+}
+
+/* ЧЕКБОКС */
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.checkbox input {
+  margin-top: 3px;
+  transform: scale(1.1);
+}
+
+/* КНОПКА */
+button {
+  width: 100%;
+  padding: 14px;
+  background: #4CA2F8;
+  border: none;
+  color: white;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3b8ad9;
+}
+
+/* POPUP */
+.mainreg-popup-notification {
+  display: none;
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: white;
+  padding: 18px;
+  border-radius: 8px;
+  z-index: 9999;
+  width: 280px;
+  max-width: calc(100% - 30px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.mainreg-popup-content p {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.mainreg-popup-close-btn {
+  background-color: #d73b3b;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.mainreg-popup-close-btn:hover {
+  background-color: #b92f2f;
+}
+
+/* МОБИЛА */
+@media (max-width: 400px) {
+  .container {
+    padding: 25px 18px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  input {
+    padding: 12px;
+  }
+
+  button {
+    padding: 12px;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Оставьте заявку</h1>
+
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Ваше имя" required>
+    <input type="email" id="email" placeholder="Email" required>
+
+    <div class="checkbox">
+      <input type="checkbox" id="consent" required>
+      <label for="consent">
+        Я согласен с <a href="#" style="color:#4CA2F8;">политикой конфиденциальности</a>
+      </label>
+    </div>
+
+    <button type="submit">Отправить</button>
+  </form>
+</div>
+
+<!-- SUCCESS -->
+<div class="mainreg-popup-notification" id="mainregSuccessPopup">
+  <div class="mainreg-popup-content">
+    <p>Ваша заявка успешно отправлена! ✅<br><br>
+    Мы свяжемся с вами 📧</p>
+    <button class="mainreg-popup-close-btn" onclick="closePopup('mainregSuccessPopup')">Закрыть</button>
+  </div>
+</div>
+
+<!-- ERROR -->
+<div class="mainreg-popup-notification" id="mainregErrorPopup">
+  <div class="mainreg-popup-content">
+    <p>Ошибка отправки ⚠️<br><br>Попробуйте позже</p>
+    <button class="mainreg-popup-close-btn" onclick="closePopup('mainregErrorPopup')">Закрыть</button>
+  </div>
+</div>
+
+<script>
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzxGlM6vUv3A5QMcACP9q8Vt1qN5jdIxQc2rwRP9k5Fk7ppsjI59WfQImJUV8GIgPZx/exec';
+
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const formData = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    consent: document.getElementById('consent').checked ? "✅ Да" : "❌ Нет"
+  };
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(formData)
+  })
+  .then(res => res.text())
+  .then(() => {
+    showPopup('mainregSuccessPopup');
+    document.getElementById('contactForm').reset();
+  })
+  .catch(() => {
+    showPopup('mainregErrorPopup');
+  });
+});
+
+function showPopup(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+
+  setTimeout(() => {
+    el.style.display = 'none';
+  }, 4000);
+}
+
+function closePopup(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+
+
+
+
+// ========================
+// КАПИТАЛИЗАЦИЯ ПЕРВОЙ БУКВЫ
+// ========================
+function capitalizeFirstLetter(input) {
+    input.value = input.value.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+}
+
+['name'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('blur', () => capitalizeFirstLetter(el));
+});
+</script>
+
+</body>
+</html>
