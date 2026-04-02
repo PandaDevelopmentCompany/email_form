@@ -139,6 +139,19 @@ button:hover {
     padding: 12px;
   }
 }
+
+/* Крутящиеся часы */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-icon {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  margin-right: 5px;
+}
+
 </style>
 
 </head>
@@ -180,11 +193,25 @@ button:hover {
   </div>
 </div>
 
+<!-- LOADING -->
+<div class="mainreg-popup-notification" id="mainregLoadingPopup">
+  <div class="mainreg-popup-content">
+    <p><span class="loading-icon">⏳</span>Отправка данных...<br>Пожалуйста, подождите...</p>
+  </div>
+</div>
+
 <script>
 const scriptURL = 'https://script.google.com/macros/s/AKfycbzxGlM6vUv3A5QMcACP9q8Vt1qN5jdIxQc2rwRP9k5Fk7ppsjI59WfQImJUV8GIgPZx/exec';
 
 document.getElementById('contactForm').addEventListener('submit', function(e) {
   e.preventDefault();
+
+    // Блокируем кнопку
+  const submitButton = this.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+
+  // Показать уведомление ожидания
+  showPopup('mainregLoadingPopup');
 
   const formData = {
     name: document.getElementById('name').value.trim(),
@@ -198,11 +225,16 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
   })
   .then(res => res.text())
   .then(() => {
+    closePopup('mainregLoadingPopup');
     showPopup('mainregSuccessPopup');
     document.getElementById('contactForm').reset();
   })
   .catch(() => {
+    closePopup('mainregLoadingPopup');
     showPopup('mainregErrorPopup');
+  })
+  .finally(() => {
+    submitButton.disabled = false; 
   });
 });
 
@@ -210,13 +242,12 @@ function showPopup(id) {
   const el = document.getElementById(id);
   el.style.display = 'block';
 
-  setTimeout(() => {
-    el.style.display = 'none';
-  }, 4000);
-}
-
-function closePopup(id) {
-  document.getElementById(id).style.display = 'none';
+  // Для ожидания отключаем авто-скрытие
+  if (id !== 'mainregLoadingPopup') {
+    setTimeout(() => {
+      el.style.display = 'none';
+    }, 4000);
+  }
 }
 
 
