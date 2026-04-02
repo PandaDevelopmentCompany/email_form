@@ -207,7 +207,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
    // Показать уведомление ожидания на 3 секунды
   const loadingPopupId = 'mainregLoadingPopup';
   showPopup(loadingPopupId);
-  setTimeout(() => closePopup(loadingPopupId), 5000);
+  setTimeout(() => closePopup(loadingPopupId), 3000);
 
   const formData = {
     name: document.getElementById('name').value.trim(),
